@@ -7,7 +7,9 @@ cd run
 vlog ../../techlib/NangateOpenCellLibrary.v
 vlog ../riscv_core_scan.v
 vlog ../lfsr.v
-vcom -2008 -suppress 1141 ../scanchain_input_rom.vhd
+vlog ../misr.v
+vcom -2008 -suppress 1141 ../bist_controller.vhd
+vcom -2008 -suppress 1141 ../phase_shifter.vhd
 vcom -2008 -suppress 1141 ../testbench.vhd
 
 # Invoke QuestaSim shell and run the TCL script

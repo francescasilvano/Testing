@@ -13,6 +13,15 @@ end riscv_testbench;
 
 architecture tb of riscv_testbench is
 
+component bist_controller 
+  GENERIC (NUMBER_PATTERNS, DEPTH_SCANCHAIN : integer);
+  PORT (clk, rst : IN STD_LOGIC;  --clock signals
+		start_test: IN STD_LOGIC; --input signal from the external world
+		testing, go_nogo: OUT STD_LOGIC;  --output signal to the external world
+		test_mode: OUT STD_LOGIC;  --output to the scan chain
+		misr_scan_en, lfsr_scan_en, misr_po_en, lfsr_pi_en: OUT STD_LOGIC);  --output to lfsr and misr
+END component;
+
 component lfsr
     generic (N    : integer;
              SEED : std_logic_vector(N downto 0));
@@ -121,9 +130,9 @@ component riscv_core_0_128_1_16_1_1_0_0_0_0_0_0_0_0_0_3_6_15_5_1a110800
 end component;
 
 
-constant clock_t1      : time := 100 ns; --50 ns
-constant clock_t2      : time := 100 ns;  --30 ns
-constant clock_t3      : time := 100 ns;  --20 ns
+constant clock_t1      : time := 50 ns; --50 ns
+constant clock_t2      : time := 30 ns;  --30 ns
+constant clock_t3      : time := 20 ns;  --20 ns
 constant apply_offset  : time := 0 ns;
 constant apply_period  : time := 100 ns;
 constant strobe_offset : time := 40 ns;
@@ -134,6 +143,9 @@ signal tester_clock : std_logic := '0';
 --PHASE SHIFTER SIGNAL 
 signal phase_shifter_out1 : std_logic_vector(50 downto 0);
 signal phase_shifter_out2 : std_logic_vector(300 downto 0);
+
+--BIST CONTROLLER 
+signal start_test_s, testing_s, go_nogo_s, test_mode_s: std_logic;
 
 --LFSR OUTPUTS	
 
@@ -146,8 +158,8 @@ signal phase_shifter_out2 : std_logic_vector(300 downto 0);
     signal dut_clock  : std_logic := '0';
     signal dut_reset  : std_logic;
 
-    signal test_mode_s: std_logic;
 -- MISR SIGNAL
+	signal misr_clock : std_logic := '0';
 	signal enable_misr_1: std_logic;
 	signal enable_misr_2: std_logic;
 	signal misr_reset: std_logic;
@@ -177,6 +189,20 @@ signal phase_shifter_out2 : std_logic_vector(300 downto 0);
 
 begin
 
+	controller: bist_controller
+	generic map (NUMBER_PATTERNS => 6,
+				 DEPTH_SCANCHAIN => 169)
+	port map (clk => lfsr_clock,
+			  rst => lfsr_reset,
+			  start_test => start_test_s,
+			  testing => testing_s,
+			  go_nogo => go_nogo_s,
+			  test_mode => test_mode_s,
+			  misr_scan_en => enable_misr_1,
+			  lfsr_scan_en => enable_lfsr_1,
+			  misr_po_en => enable_misr_2,
+			  lfsr_pi_en => enable_lfsr_2);
+
     stimuli1 : lfsr
     generic map (N => 50,
                  SEED => "011010001000000101110100100100100010001000100010001")
@@ -194,7 +220,7 @@ begin
 	misr1: misr
     generic map (N => 50,
                  SEED => "011010001000000101110100100100100010001000100010001")
-    port map (clk => lfsr_clock,
+    port map (clk => misr_clock,
 			  enable=>enable_misr_1,
               reset => misr_reset,
               invalue => "000000000000000000000000000000000"&test_so1_s & test_so2_s & test_so3_s & test_so4_s & test_so5_s & test_so6_s & test_so7_s & test_so8_s & test_so9_s & test_so10_s & test_so11_s & test_so12_s & test_so13_s & test_so14_s & test_so15_s & test_so16_s & test_so17_s & test_so18_s,
@@ -217,7 +243,7 @@ begin
 	misr2: misr
     generic map (N => 300,
                  SEED => "10010100111111101010111111111111000000000000000000010101010100000000000000111111111111111101010001001000100010001000100111110100010001001000001010100100101001111111010101111111111110000000000000000000101010101000000000000001111111111111111010100010010001000100010001001111101000100010010000010101001")
-    port map (clk => lfsr_clock,
+    port map (clk => misr_clock,
 			  enable=>enable_misr_2,
               reset => misr_reset,
               invalue => "000000000000000000000000000000000000000000000000000000000000000000000" & instr_req_o_s & instr_addr_o_s & data_req_o_s & data_we_o_s & data_be_o_s & data_addr_o_s & data_wdata_o_s & apu_master_req_o_s & apu_master_ready_o_s & apu_master_operands_o_s & apu_master_op_o_s & apu_master_flags_o_s & apu_master_type_o_s & irq_ack_o_s & irq_id_o_s & sec_lvl_o_s & core_busy_o_s,
@@ -322,22 +348,21 @@ begin
 
     dut_clock <= transport tester_clock after apply_period;
     lfsr_clock <= transport tester_clock after apply_period - clock_t1 + apply_offset;
-	enable_misr_1<= '1';
-	enable_misr_2<= '1';
-	enable_lfsr_1<='1';
-	enable_lfsr_2<='1';
+	misr_clock <= transport lfsr_clock after 10 ns;
     dut_reset <= '0', '1' after clock_t1, '0' after clock_t1 + clock_t2;
     lfsr_reset <= '1', '0' after clock_t1 + clock_t2;
 	misr_reset <= '1', '0' after clock_t1 + clock_t2;
-	test_mode_generation: process
-	begin
-		loop
-			test_mode_s <= '0';
-			wait for 100 ns;
-			test_mode_s <= '1';
-			wait for 169*100 ns;
-		end loop;
-	end process;
+	start_test_s <= '0', '1' after clock_t1 + clock_t2 + clock_t1, '0' after 5*clock_t1;
+	
+--	test_mode_generation: process
+--	begin
+--		loop
+--			test_mode_s <= '0';
+--			wait for 100 ns;
+--			test_mode_s <= '1';
+--          wait for 169*100 ns;
+--		end loop;
+--	end process;
 
 -- ***** MONITOR **********
 

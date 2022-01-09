@@ -22,12 +22,11 @@ integer i;
                         
 always @(posedge clk, posedge reset, posedge enable)
 begin 
-	if(enable)
-		if (reset)
-		    r_reg <= SEED;  // use this or uncomment below two line
-		else if (clk == 1'b1)
-			for(i=0; i<N; i=i+1)
-				r_reg[i] <= r_next[i] ^ invalue[i];
+	if (reset)
+    	r_reg <= SEED; 	
+	else if(enable && clk == 1'b1)
+		for(i=0; i<N; i=i+1)
+			r_reg[i] <= r_next[i] ^ invalue[i];
 end
 
 generate

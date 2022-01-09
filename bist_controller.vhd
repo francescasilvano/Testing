@@ -63,6 +63,20 @@ BEGIN
 					ELSE
 						currState <= UPLOAD_SCAN;
 					END IF;
+			    WHEN UPLOAD_DOWNLOAD_SCAN =>
+					testing <= '1';
+					go_nogo <= '0';
+					test_mode <= '1';
+					misr_scan_en <= '1';
+					lfsr_scan_en <= '1';
+					misr_po_en <= '0';
+					lfsr_pi_en <= '0';
+					scanCounter <= std_logic_vector(unsigned(scanCounter) + 1);
+					IF(to_integer(unsigned(scanCounter)) = DEPTH_SCANCHAIN - 1) THEN
+						currState <= CAPTURE_PO;
+					ELSE
+						currState <= UPLOAD_DOWNLOAD_SCAN;
+					END IF;
 				WHEN CAPTURE_PO => 
 					testing <= '1';
 					go_nogo <= '0';

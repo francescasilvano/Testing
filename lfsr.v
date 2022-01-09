@@ -20,10 +20,9 @@ wire feedback_value;
                         
 always @(posedge clk, posedge reset, posedge enable)
 begin 
-	if(enable)
-		if (reset)
-		    r_reg <= SEED;  // use this or uncomment below two line
-		else if (clk == 1'b1)
+	if (reset)
+			r_reg <= SEED;
+	else if (enable && clk == 1'b1)
 		    r_reg <= r_next;
 end
 
