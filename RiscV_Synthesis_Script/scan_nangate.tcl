@@ -35,7 +35,8 @@ set_dft_signal -view spec -type TestMode -active_state 1 -port test_mode_tp
 #enable test_point
 set_dft_configuration -testability enable
 #configura random_resistant
-set_testability_configuration -target random_resistant -target_test_coverage 95 
+#set_testability_configuration -target random_resistant -target_test_coverage 95 
+set_testability_configuration -target core_wrapper
 #-random_pattern_count 1000 
 
 set_scan_element false NangateOpenCellLibrary/DLH_X1
@@ -47,7 +48,7 @@ set_scan_configuration -chain_count 18
 create_test_protocol -infer_asynch -infer_clock
 dft_drc
 run_test_point_analysis
-preview_dft -test_points all
+preview_dft
 insert_dft
 
 streaming_dft_planner
