@@ -18,7 +18,7 @@ component bist_controller
   PORT (clk, rst : IN STD_LOGIC;  --clock signals
 		start_test: IN STD_LOGIC; --input signal from the external world
 		testing, go_nogo: OUT STD_LOGIC;  --output signal to the external world
-		test_mode: OUT STD_LOGIC;  --output to the scan chain
+		test_mode, test_point: OUT STD_LOGIC;  --output to the scan chain
 		misr_scan_en, lfsr_scan_en, misr_po_en, lfsr_pi_en: OUT STD_LOGIC);  --output to lfsr and misr
 END component;
 
@@ -126,7 +126,8 @@ component riscv_core_0_128_1_16_1_1_0_0_0_0_0_0_0_0_0_3_6_15_5_1a110800
   	test_so17: out std_logic; 
   	test_si18: in std_logic;
   	test_so18: out std_logic; 
-  	test_mode_tp: in std_logic);
+  	test_mode_tp: in std_logic;
+	test_mode: in std_logic);
 end component;
 
 
@@ -145,7 +146,7 @@ signal phase_shifter_out1 : std_logic_vector(50 downto 0);
 signal phase_shifter_out2 : std_logic_vector(300 downto 0);
 
 --BIST CONTROLLER 
-signal start_test_s, testing_s, go_nogo_s, test_mode_s: std_logic;
+signal start_test_s, testing_s, go_nogo_s, test_mode_s, test_point_s: std_logic;
 
 --LFSR OUTPUTS	
 
@@ -190,14 +191,15 @@ signal start_test_s, testing_s, go_nogo_s, test_mode_s: std_logic;
 begin
 
 	controller: bist_controller
-	generic map (NUMBER_PATTERNS => 6,
-				 DEPTH_SCANCHAIN => 169)
+	generic map (NUMBER_PATTERNS => 800,
+				 DEPTH_SCANCHAIN => 170)
 	port map (clk => lfsr_clock,
 			  rst => lfsr_reset,
 			  start_test => start_test_s,
 			  testing => testing_s,
 			  go_nogo => go_nogo_s,
 			  test_mode => test_mode_s,
+			  test_point => test_point_s,
 			  misr_scan_en => enable_misr_1,
 			  lfsr_scan_en => enable_lfsr_1,
 			  misr_po_en => enable_misr_2,
@@ -329,7 +331,8 @@ begin
   	test_so17 => test_so17_s,
   	test_si18 => phase_shifter_out1(49),
   	test_so18 => test_so18_s,
-  	test_mode_tp => '1'
+  	test_mode_tp => test_point_s,
+	test_mode => '0'
     );
 
 -- ***** CLOCK/RESET ***********************************

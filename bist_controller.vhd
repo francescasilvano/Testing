@@ -8,7 +8,7 @@ ENTITY bist_controller is
   PORT (clk, rst : IN STD_LOGIC;  --clock signals
 		start_test: IN STD_LOGIC; --input signal from the external world
 		testing, go_nogo: OUT STD_LOGIC;  --output signal to the external world
-		test_mode: OUT STD_LOGIC;  --output to the scan chain
+		test_mode, test_point: OUT STD_LOGIC;  --output to the scan chain
 		misr_scan_en, lfsr_scan_en, misr_po_en, lfsr_pi_en: OUT STD_LOGIC);  --output to lfsr and misr
 END bist_controller;
 
@@ -32,6 +32,7 @@ BEGIN
 			lfsr_scan_en <= '0';
 			misr_po_en <= '0';
 			lfsr_pi_en <= '0';
+			test_point <= '0';
 			scanCounter <= (OTHERS => '0');
 			patternCounter <= (OTHERS => '0');
 		ELSIF (rising_edge(clk)) THEN
@@ -44,6 +45,7 @@ BEGIN
 					lfsr_scan_en <= '0';
 					misr_po_en <= '0';
 					lfsr_pi_en <= '0';
+					test_point <= '0';
 					IF (start_test = '1') then
 						currState <= UPLOAD_SCAN;
 					ELSE
@@ -57,6 +59,7 @@ BEGIN
 					lfsr_scan_en <= '1';
 					misr_po_en <= '0';
 					lfsr_pi_en <= '0';
+					test_point <= '1';
 					scanCounter <= std_logic_vector(unsigned(scanCounter) + 1);
 					IF(to_integer(unsigned(scanCounter)) = DEPTH_SCANCHAIN - 1) THEN
 						currState <= CAPTURE_PO;
@@ -71,6 +74,7 @@ BEGIN
 					lfsr_scan_en <= '1';
 					misr_po_en <= '0';
 					lfsr_pi_en <= '0';
+					test_point <= '1';
 					scanCounter <= std_logic_vector(unsigned(scanCounter) + 1);
 					IF(to_integer(unsigned(scanCounter)) = DEPTH_SCANCHAIN - 1) THEN
 						currState <= CAPTURE_PO;
@@ -85,6 +89,7 @@ BEGIN
 					lfsr_scan_en <= '0';
 					misr_po_en <= '1';
 					lfsr_pi_en <= '1';
+					test_point <= '1';
 					scanCounter <= (OTHERS => '0');
 					patternCounter <= std_logic_vector(unsigned(patternCounter) + 1);
 					IF (to_integer(unsigned(patternCounter)) = NUMBER_PATTERNS) then
@@ -100,6 +105,7 @@ BEGIN
 					lfsr_scan_en <= '0';
 					misr_po_en <= '0';
 					lfsr_pi_en <= '0';
+					test_point <= '0';
 					patternCounter <=  (OTHERS => '0');
 					currState <= COMPLETE;
 				WHEN OTHERS =>
