@@ -16,7 +16,7 @@ end phase_shifter;
 architecture beh of phase_shifter is
 begin
 
-	output_p<= (input_p(0) & input_p(N downto 1)) XOR input_p;
+	output_p<= (input_p(0) & input_p(N downto 1)) XOR input_p XOR (input_p(0) & input_p(1) & input_p(N downto 2));
 
 	
               
