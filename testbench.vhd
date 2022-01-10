@@ -255,7 +255,7 @@ begin
     	clk_i => dut_clock, 
         rst_ni => NOT(dut_reset),
   	clock_en_i => '1',
-  	test_en_i => '1', 
+  	test_en_i => test_mode_s, 
   	fregfile_disable_i => phase_shifter_out2(0),
   	boot_addr_i => phase_shifter_out2(32 downto 1),
         core_id_i => phase_shifter_out2(36 downto 33), 
@@ -329,7 +329,7 @@ begin
   	test_so17 => test_so17_s,
   	test_si18 => phase_shifter_out1(49),
   	test_so18 => test_so18_s,
-  	test_mode_tp => test_mode_s
+  	test_mode_tp => '1'
     );
 
 -- ***** CLOCK/RESET ***********************************
