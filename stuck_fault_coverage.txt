@@ -1,0 +1,20 @@
+     Uncollapsed Stuck Fault Summary Report
+ -----------------------------------------------
+ fault class                     code   #faults
+ ------------------------------  ----  ---------
+ Detected                         DT      60936
+ Possibly detected                PT       3028
+ Undetectable                     UD        231
+ ATPG untestable                  AU          0
+ Not detected                     ND     237633
+ -----------------------------------------------
+ total faults                            301828
+ test coverage                            20.71%
+ fault coverage                           20.69%
+ -----------------------------------------------
+            Pattern Summary Report
+ -----------------------------------------------
+ #internal patterns                           0
+ #external patterns (riscv_dumpports.vcd.fixed) 160400
+     #full_sequential patterns           160400
+
