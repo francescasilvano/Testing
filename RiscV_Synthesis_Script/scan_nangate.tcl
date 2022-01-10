@@ -22,7 +22,8 @@ set_dft_clock_gating_pin [get_cells * -hierarchical -filter "@ref_name =~ SNPS_C
 
 
 report_area
-set_dft_configuration -scan_compression enable
+#enable test_point
+set_dft_configuration -scan_compression enable -testability enable
 
 set test_default_scan_style multiplexed_flip_flop
 
@@ -32,12 +33,13 @@ set_dft_signal  -view spec -type ScanEnable -port test_en_i
 set_dft_signal -view existing_dft -type Constant -active_state 1 -port test_mode_tp
 set_dft_signal -view spec -type TestMode -active_state 1 -port test_mode_tp
 
-#enable test_point
-set_dft_configuration -testability enable
+
 #configura random_resistant
-#set_testability_configuration -target random_resistant -target_test_coverage 95 
-set_testability_configuration -target core_wrapper
-#-random_pattern_count 1000 
+set_testability_configuration -control_signal test_mode_tp -test_points_per_scan_cell 35
+
+set_testability_configuration -target random_resistant -random_pattern_count 1000 
+
+set_testability_configuration -target x_blocking
 
 set_scan_element false NangateOpenCellLibrary/DLH_X1
 
@@ -48,7 +50,7 @@ set_scan_configuration -chain_count 18
 create_test_protocol -infer_asynch -infer_clock
 dft_drc
 run_test_point_analysis
-preview_dft
+preview_dft -test_points all
 insert_dft
 
 streaming_dft_planner
