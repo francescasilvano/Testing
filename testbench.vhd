@@ -15,11 +15,13 @@ architecture tb of riscv_testbench is
 
 component bist_controller 
   GENERIC (NUMBER_PATTERNS, DEPTH_SCANCHAIN : integer);
-  PORT (clk, rst : IN STD_LOGIC;  --clock signals
-		start_test: IN STD_LOGIC; --input signal from the external world
-		testing, go_nogo: OUT STD_LOGIC;  --output signal to the external world
-		test_mode, test_point: OUT STD_LOGIC;  --output to the scan chain
-		misr_scan_en, lfsr_scan_en, misr_po_en, lfsr_pi_en: OUT STD_LOGIC);  --output to lfsr and misr
+  PORT (clk, rst : IN STD_LOGIC;  
+		start_test: IN STD_LOGIC; 
+		testing, go_nogo: OUT STD_LOGIC;  
+		test_mode, test_point: OUT STD_LOGIC;  
+		misr_scan_en, lfsr_scan_en, misr_po_en, lfsr_pi_en: OUT STD_LOGIC;
+		misr_scan_q: IN STD_LOGIC_VECTOR(50 DOWNTO 0);
+	    misr_po_q: IN STD_LOGIC_VECTOR(300 DOWNTO 0));  
 END component;
 
 component lfsr
@@ -203,7 +205,9 @@ begin
 			  misr_scan_en => enable_misr_1,
 			  lfsr_scan_en => enable_lfsr_1,
 			  misr_po_en => enable_misr_2,
-			  lfsr_pi_en => enable_lfsr_2);
+			  lfsr_pi_en => enable_lfsr_2,
+			  misr_scan_q => misr_out1,
+			  misr_po_q => misr_out2);
 
     stimuli1 : lfsr
     generic map (N => 50,

@@ -9,12 +9,15 @@ ENTITY bist_controller is
 		start_test: IN STD_LOGIC; --input signal from the external world
 		testing, go_nogo: OUT STD_LOGIC;  --output signal to the external world
 		test_mode, test_point: OUT STD_LOGIC;  --output to the scan chain
-		misr_scan_en, lfsr_scan_en, misr_po_en, lfsr_pi_en: OUT STD_LOGIC);  --output to lfsr and misr
+		misr_scan_en, lfsr_scan_en, misr_po_en, lfsr_pi_en: OUT STD_LOGIC;
+		misr_scan_q: IN STD_LOGIC_VECTOR(50 DOWNTO 0);
+	    misr_po_q: IN STD_LOGIC_VECTOR(300 DOWNTO 0)
+       );  
 END bist_controller;
 
 ARCHITECTURE fsm OF bist_controller IS
 
-TYPE stateType IS (START, UPLOAD_SCAN, UPLOAD_DOWNLOAD_SCAN, CAPTURE_PO, COMPLETE);
+TYPE stateType IS (START, UPLOAD_SCAN, UPLOAD_DOWNLOAD_SCAN, CAPTURE_PO, COMPLETE, COMPARE, TEST_PASS, TEST_FAIL);
 SIGNAL currState: stateType;
 SIGNAL scanCounter: STD_LOGIC_VECTOR((integer(ceil(log2(real(DEPTH_SCANCHAIN))))+1) downto 0);
 SIGNAL patternCounter: STD_LOGIC_VECTOR ((integer(ceil(log2(real(NUMBER_PATTERNS))))+1) downto 0);
@@ -98,6 +101,31 @@ BEGIN
 						currState <= UPLOAD_DOWNLOAD_SCAN;
 					END IF;
 				WHEN COMPLETE =>
+					testing <= '1';
+					go_nogo <= '0';
+					test_mode <= '0';
+					misr_scan_en <= '0';
+					lfsr_scan_en <= '0';
+					misr_po_en <= '0';
+					lfsr_pi_en <= '0';
+					test_point <= '0';
+					patternCounter <=  (OTHERS => '0');
+					currState <= COMPARE;
+				WHEN COMPARE => 
+					testing <= '1';
+					go_nogo <= '0';
+					test_mode <= '0';
+					misr_scan_en <= '0';
+					lfsr_scan_en <= '0';
+					misr_po_en <= '0';
+					lfsr_pi_en <= '0';
+					test_point <= '0';
+					IF (misr_scan_q = "000"&X"00000000FF3E" AND misr_po_q = '0'&X"0000000000000000012032F789E71C8C50D4DC139C24A36FFCD61F88E1C4B563ECE163D3F24") then
+						currState <= TEST_PASS;
+					ELSE
+						currState <= TEST_FAIL;
+					END IF;
+				WHEN TEST_PASS =>
 					testing <= '0';
 					go_nogo <= '1';
 					test_mode <= '0';
@@ -106,8 +134,17 @@ BEGIN
 					misr_po_en <= '0';
 					lfsr_pi_en <= '0';
 					test_point <= '0';
-					patternCounter <=  (OTHERS => '0');
-					currState <= COMPLETE;
+					currState <= TEST_PASS;
+				WHEN TEST_FAIL =>
+					testing <= '0';
+					go_nogo <= '0';
+					test_mode <= '0';
+					misr_scan_en <= '0';
+					lfsr_scan_en <= '0';
+					misr_po_en <= '0';
+					lfsr_pi_en <= '0';
+					test_point <= '0';
+					currState <= TEST_FAIL;
 				WHEN OTHERS =>
 					currState <= START;
 			END CASE;
