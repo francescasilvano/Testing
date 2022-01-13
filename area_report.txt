@@ -80,3 +80,28 @@ Net Interconnect area:      undefined  (Wire load has zero net area)
 
 Total cell area:                 62669.068320
 Total area:                 undefined
+
+
+
+---------------------------------------------------------
+ENTIRE LBIST
+-----------------------------------------------------------
+
+Number of ports:                        13129
+Number of nets:                         60812
+Number of cells:                        47129
+Number of combinational cells:          42987
+Number of sequential cells:              3779
+Number of macros/black boxes:               0
+Number of buf/inv:                       7506
+Number of references:                      11
+
+Combinational area:              46788.336144
+Buf/Inv area:                     4330.214026
+Noncombinational area:           23376.346351
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (Wire load has zero net area)
+
+Total cell area:                 70164.682495
+Total area:                 undefined
+
