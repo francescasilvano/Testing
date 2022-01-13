@@ -125,12 +125,11 @@ module tb_top
     end
 	
 	always_ff @(posedge clk, negedge rst_n) begin
+	automatic string firmware;
+	automatic int prog_size = 6;
         if (test_o == 0) begin
 			if(go_nogo) begin 
             	$display("ALL TESTS IN BIST PASSED");
-				start_test =0;
-				automatic string firmware;
-        		automatic int prog_size = 6;
         		if($value$plusargs("firmware=%s", firmware)) begin
             		if($test$plusargs("verbose"))
                 		$display("[TESTBENCH] %t: loading firmware %0s ...",$time, firmware);
@@ -150,8 +149,8 @@ module tb_top
     always_ff @(posedge clk, negedge rst_n) begin
 	//if (tb_top.riscv_wrapper_i.riscv_core_i.load_store_unit_i.data_we_ex_i == 1'h1) begin
 	if (tb_top.riscv_wrapper_i.data_req == 1'h1 && tb_top.riscv_wrapper_i.data_we == 1'h1) begin
-	  if (tb_top.riscv_wrapper_i.riscv_core_i.load_store_unit_i.data_addr_o < 32'h200000 || tb_top.riscv_wrapper_i.riscv_core_i.load_store_unit_i.data_addr_o > 32'h240000) begin
-		  $display("MEMORY MAP WARNING: Writing OUTSIDE DRAM at address %h, time %t", tb_top.riscv_wrapper_i.riscv_core_i.load_store_unit_i.data_addr_o, $realtime); 
+	  if (tb_top.riscv_wrapper_i.riscv_core_i.dut.load_store_unit_i.data_addr_o < 32'h200000 || tb_top.riscv_wrapper_i.riscv_core_i.dut.load_store_unit_i.data_addr_o > 32'h240000) begin
+		  $display("MEMORY MAP WARNING: Writing OUTSIDE DRAM at address %h, time %t", tb_top.riscv_wrapper_i.riscv_core_i.dut.load_store_unit_i.data_addr_o, $realtime); 
 	  end 
 	end
     end
@@ -166,7 +165,7 @@ module tb_top
     riscv_wrapper_i
         (.clk_i          ( clk          ),
 		 .start_test     (start_test	),
-         .rst_ni         ( rst_n        ),
+         .rst_ni        ( rst_n        ),
 	     .test_o		 (test_o        ),
 	     .go_nogo	   	 (go_nogo		),	
          .fetch_enable_i ( fetch_enable ),

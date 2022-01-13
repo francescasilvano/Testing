@@ -10,7 +10,7 @@ vlog ../lfsr.v
 vlog ../misr.v
 vcom -2008 -suppress 1141 ../bist_controller.vhd
 vcom -2008 -suppress 1141 ../phase_shifter.vhd
-vcom -2008 -suppress 1141 ../testbench.vhd
+vcom -2008 -suppress 1141 ../basic_testbench.vhd
 
 # Invoke QuestaSim shell and run the TCL script
 vsim -c -novopt work.riscv_testbench -t 1ns -do ../riscv_testing_wave.tcl -wlf risc_sim.wlf

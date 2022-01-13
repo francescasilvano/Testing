@@ -61,37 +61,36 @@ module riscv_wrapper
     assign debug_req_i = 1'b0;
 
     // instantiate the core
-    riscv_top
-        #(.INSTR_RDATA_WIDTH (INSTR_RDATA_WIDTH),
-          .PULP_SECURE(PULP_SECURE),
-          .FPU(0))
- riscv_top(
+    
+//        #(.INSTR_RDATA_WIDTH (INSTR_RDATA_WIDTH),
+//          .PULP_SECURE(PULP_SECURE),
+//          .FPU(0))
+ riscv_top riscv_core_i(
 		.clk_i                  ( clk_i                 ),
         .rst_ni                 ( rst_ni                ),
 		.start_test_i           ( start_test            ),
 		.testing_o				(   test_o              ),
 		.go_nogo_o              ( go_nogo               ),
-		.clock_en_i             ( '1                    ),
+		.clock_en_i             ( 1'b1                    ),
   		.fregfile_disable_i     ( 1'b0                  ),
   		.boot_addr_i            ( BOOT_ADDR             ),
         .core_id_i              ( 4'h0                  ),
         .cluster_id_i           ( 6'h0                  ),
-
-        .instr_addr_o           ( instr_addr            ),
-        .instr_req_o            ( instr_req             ),
-        .instr_rdata_i          ( instr_rdata           ),
+		
+		.instr_req_o            ( instr_req             ),
         .instr_gnt_i            ( instr_gnt             ),
         .instr_rvalid_i         ( instr_rvalid          ), 
+        .instr_addr_o           ( instr_addr            ),
+        .instr_rdata_i          ( instr_rdata           ),
 
-
-        .data_addr_o            ( data_addr             ),
-        .data_wdata_o           ( data_wdata            ),
-        .data_we_o              ( data_we               ),
         .data_req_o             ( data_req              ),
-        .data_be_o              ( data_be               ),
-        .data_rdata_i           ( data_rdata            ),
         .data_gnt_i             ( data_gnt              ),
         .data_rvalid_i          ( data_rvalid           ),
+        .data_we_o              ( data_we               ),
+        .data_be_o              ( data_be               ),
+        .data_addr_o            ( data_addr             ),
+        .data_wdata_o           ( data_wdata            ),
+		.data_rdata_i           ( data_rdata            ),        
 
         .apu_master_req_o       (                       ),
         .apu_master_ready_o     (                       ),
@@ -145,7 +144,7 @@ module riscv_wrapper
          .irq_id_o       ( irq_id_in                      ),
          .irq_o          ( irq                            ),
 
-         .pc_core_id_i   ( riscv_top.pc_id                ),
+         .pc_core_id_i   ( riscv_core_i.dut.pc_id                ),
 
          .tests_passed_o ( tests_passed_o                 ),
          .tests_failed_o ( tests_failed_o                 ),
