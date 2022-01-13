@@ -1,0 +1,67 @@
+ATPG RESULTS FOR COMPARISON WITH RANDOM PATTERN GENERATION
+
+------------------------------------------------------------------------
+STUCK AT FAULTS
+-------------------------------------------------------------------------
+
+     Uncollapsed Stuck Fault Summary Report
+ -----------------------------------------------
+ fault class                     code   #faults
+ ------------------------------  ----  ---------
+ Detected                         DT     295943
+ Possibly detected                PT          0
+ Undetectable                     UD       1213
+ ATPG untestable                  AU       5752
+ Not detected                     ND        294
+ -----------------------------------------------
+ total faults                            303202
+ test coverage                            98.00%
+ -----------------------------------------------
+            Pattern Summary Report
+ -----------------------------------------------
+ #internal patterns                        2380
+     #basic_scan patterns                  2380
+ -----------------------------------------------
+            CPU Usage Summary Report
+ -----------------------------------------------
+ Total CPU time                           62.29
+ -----------------------------------------------
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ -----------------------------------------------------------------------
+ TRANSITION DELAY FAULTS
+ -----------------------------------------------------------------------
+    Uncollapsed Transition Fault Summary Report
+ -----------------------------------------------
+ fault class                     code   #faults
+ ------------------------------  ----  ---------
+ Detected                         DT     270531
+ Possibly detected                PT          0
+ Undetectable                     UD        805
+ ATPG untestable                  AU      10221
+ Not detected                     ND       2499
+ -----------------------------------------------
+ total faults                            284056
+ test coverage                            95.51%
+ -----------------------------------------------
+            Pattern Summary Report
+ -----------------------------------------------
+ #internal patterns                        5040
+     #basic_scan patterns                     1
+     #fast_sequential patterns             5039
+ -----------------------------------------------
+            CPU Usage Summary Report
+ -----------------------------------------------
+ Total CPU time                          721.62
+ -----------------------------------------------
