@@ -1,0 +1,82 @@
+-------------------------------------------------
+RISCV WITH NO DfT
+-------------------------------------------------
+
+report_area
+ 
+****************************************
+Report : area
+Design : riscv_core_0_128_1_16_1_1_0_0_0_0_0_0_0_0_0_3_6_15_5_1a110800
+Version: R-2020.09-SP2
+Date   : Mon Jan 10 12:24:48 2022
+****************************************
+
+Information: Updating design information... (UID-85)
+Warning: Design 'riscv_core_0_128_1_16_1_1_0_0_0_0_0_0_0_0_0_3_6_15_5_1a110800' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+Library(s) Used:
+
+    NangateOpenCellLibrary (File: /home/s280098/riscv_testing_2021_zoix/hw_assignment/syn/techlib/NangateOpenCellLibrary_typical_ccs_scan.db)
+
+Number of ports:                         8589
+Number of nets:                         54205
+Number of cells:                        45526
+Number of combinational cells:          36133
+Number of sequential cells:              3125
+Number of macros/black boxes:               0
+Number of buf/inv:                       6018
+Number of references:                      15
+
+Combinational area:              39765.670087
+Buf/Inv area:                     3480.876017
+Noncombinational area:           20631.492204
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (Wire load has zero net area)
+
+Total cell area:                 60397.162291
+Total area:                 undefined
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------
+RISCV  ! WITH !  DfT
+-------------------------------------------------
+
+report_area
+ 
+****************************************
+Report : area
+Design : riscv_core_0_128_1_16_1_1_0_0_0_0_0_0_0_0_0_3_6_15_5_1a110800
+Version: R-2020.09-SP2
+Date   : Mon Jan 10 12:44:09 2022
+****************************************
+
+Information: Updating design information... (UID-85)
+Warning: Design 'riscv_core_0_128_1_16_1_1_0_0_0_0_0_0_0_0_0_3_6_15_5_1a110800' contains 2 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+Library(s) Used:
+
+    NangateOpenCellLibrary (File: /home/s280098/riscv_testing_2021_zoix/hw_assignment/syn/techlib/NangateOpenCellLibrary_typical_ccs_scan.db)
+
+Number of ports:                        10196
+Number of nets:                         53914
+Number of cells:                        40933
+Number of combinational cells:          37620
+Number of sequential cells:              3145
+Number of macros/black boxes:               0
+Number of buf/inv:                       6357
+Number of references:                      24
+
+Combinational area:              41914.418116
+Buf/Inv area:                     3705.380017
+Noncombinational area:           20754.650204
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (Wire load has zero net area)
+
+Total cell area:                 62669.068320
+Total area:                 undefined
