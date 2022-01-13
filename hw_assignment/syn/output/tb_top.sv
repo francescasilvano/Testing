@@ -28,8 +28,10 @@ module tb_top
     const time RESP_ACQUISITION_DEL = CLK_PERIOD * 0.9;
     const time RESET_DEL = STIM_APPLICATION_DEL;
     const int  RESET_WAIT_CYCLES  = 4;
-
-
+	const int START_TESTING = 2;
+	
+	//flag
+	logic flag;
     // clock and reset for tb
     logic                   clk   = 'b1;
     logic                   rst_n = 'b0;
@@ -71,15 +73,34 @@ module tb_top
 
     // reset generation
     initial begin: reset_gen
+		flag = 0;
         rst_n          = 1'b0;
-		start_test = 1;
-        // wait a few cycles
+		start_test = 1'b1;
+        //wait a few cycles
         repeat (RESET_WAIT_CYCLES) begin
             @(posedge clk); //TODO: was posedge, see below
         end
-
+		rst_n= 1'b1;
+		//start testing after clock
+		repeat (START_TESTING) begin
+            @(posedge clk); //TODO: was posedge, see below
+        end
+		start_test = 1'b0;
+		//il test è partito si deve aspettare che testing=0
+		while(test_o == 1) begin
+			
+		end
+		//quando test_o è 0 controllo gonogo
+		if(go_nogo == 1) begin
+			$display("ALL TESTS IN BIST PASSED");
+			flag = 1;
+		end else begin
+			$display("ALL TESTS IN BIST FAILED!);
+			$finish;
+		end
         // start running
         #RESET_DEL rst_n = 1'b1;
+		
         if($test$plusargs("verbose"))
             $display("reset deasserted", $time);
 
@@ -89,6 +110,23 @@ module tb_top
     initial begin: timing_format
         $timeformat(-9, 0, "ns", 9);
     end: timing_format
+
+//inizia il firmware
+    always_ff @(posedge clk, negedge rst_n) begin
+		automatic string firmware;
+		automatic int prog_size = 6;
+		if (flag) begin
+			if($value$plusargs("firmware=%s", firmware)) begin
+            	if($test$plusargs("verbose"))
+                	$display("[TESTBENCH] %t: loading firmware %0s ...",$time, firmware);
+            		$readmemh(firmware, riscv_wrapper_i.ram_i.dp_ram_i.mem);
+				end else begin
+		            $display("No firmware specified");
+		            $finish;
+		        end
+		    end
+		end
+	end
 
     // abort after n cycles, if we want to
     always_ff @(posedge clk, negedge rst_n) begin
@@ -121,27 +159,6 @@ module tb_top
             else
                 $display("EXIT FAILURE: %d", exit_value);
             $finish;
-        end
-    end
-	
-	always_ff @(posedge clk, negedge rst_n) begin
-	automatic string firmware;
-	automatic int prog_size = 6;
-        if (test_o == 0) begin
-			if(go_nogo) begin 
-            	$display("ALL TESTS IN BIST PASSED");
-        		if($value$plusargs("firmware=%s", firmware)) begin
-            		if($test$plusargs("verbose"))
-                		$display("[TESTBENCH] %t: loading firmware %0s ...",$time, firmware);
-            			$readmemh(firmware, riscv_wrapper_i.ram_i.dp_ram_i.mem);
-					end else begin
-            			$display("No firmware specified");
-            			$finish;
-        		end
-			end else begin
-				$display("TEST(S) IN BIST FAILED!");
-            	$finish;
-			end
         end
     end
 
