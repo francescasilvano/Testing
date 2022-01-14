@@ -364,7 +364,7 @@ BEGIN
     dut: riscv_core_0_128_1_16_1_1_0_0_0_0_0_0_0_0_0_3_6_15_5_1a110800
     port map (
     	clk_i => dut_clock, 
-        rst_ni => NOT(dut_reset),
+        rst_ni => dut_reset,
 	  	clock_en_i => '1',
 	  	test_en_i => test_mode_s, 
 	  	fregfile_disable_i => fregfile_disable_i_s,
