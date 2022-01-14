@@ -31,7 +31,7 @@ module tb_top
 	const int START_TESTING = 2;
 	
 	//flag
-	logic flag;
+	logic flag = 'b0;
     // clock and reset for tb
     logic                   clk   = 'b1;
     logic                   rst_n = 'b0;
@@ -87,8 +87,9 @@ module tb_top
         end
 		start_test = 1'b0;
 		//il test è partito si deve aspettare che testing=0
-		while(test_o == 1) begin
-			
+		while(test_o == 1'b1) begin
+			@(posedge clk);
+			$display("test_o = 1");
 		end
 		//quando test_o è 0 controllo gonogo
 		if(go_nogo == 1) begin
