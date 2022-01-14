@@ -470,6 +470,24 @@ BEGIN
     sec_lvl_o <= sec_lvl_o_s;
   	core_busy_o <= core_busy_o_s;
 
+	process(clk_i)  is begin
+		if(rising_edge(clk_i))	then
+			if(testing_s = '1') then
+				instr_req_o <= '0';
+        		instr_addr_o <= (others => '0');
+  				data_req_o <= '0'; 
+        		data_we_o <= '0';  
+  				data_be_o <= (others => '0');
+  				data_addr_o <= (others => '0');
+  				data_wdata_o <= (others => '0');  
+  				irq_ack_o <= '0'; 
+  				irq_id_o <= (others => '0');
+        		sec_lvl_o <= '0';
+  				core_busy_o <= '0';
+			end if;
+		end	if;
+	end process;
+
 END risc_bist;
 
 
