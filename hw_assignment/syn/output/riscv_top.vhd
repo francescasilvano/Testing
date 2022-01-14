@@ -401,7 +401,7 @@ BEGIN
 	  	irq_sec_i => irq_sec_i_s,
         sec_lvl_o => sec_lvl_o_s,  
 	  	debug_req_i => debug_req_i_s,
-	  	fetch_enable_i => fetch_enable_i_s,
+	  	fetch_enable_i => '1',
 	  	core_busy_o => core_busy_o_s,
         ext_perf_counters_i => ext_perf_counters_i_s,
 	  	test_si1 => phase_shifter_out1(0),
